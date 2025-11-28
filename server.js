@@ -14,6 +14,8 @@ app.use(express.json());
 app.use("/api/schools", require("./routes/schoolRoutes"));
 app.use("/api/company", require("./routes/companyRoutes"));
 app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/parent", require("./routes/parentRoutes"));
+
 
 // ⭐ NEW: Student Routes (added without editing anything else)
 app.use("/api/students", require("./routes/studentRoutes"));
