@@ -23,9 +23,6 @@ exports.createStudent = async (req, res) => {
             paymentCode
         });
 
-        // OPTIONAL – send SMS after creation
-        // sendSMS(parentPhone, `Your child's payment code is: ${paymentCode}`);
-
         res.status(201).json(student);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -34,11 +31,11 @@ exports.createStudent = async (req, res) => {
 
 // GET ALL STUDENTS
 exports.getStudents = async (req, res) => {
-    const students = await Student.find().sort({ studentId: 1 });
+    const students = await Student.find().sort({ name: 1 }); // Sort alphabetically
     res.json(students);
 };
 
-// SEARCH BY NAME OR PARENT PHONE
+// SEARCH STUDENTS
 exports.searchStudents = async (req, res) => {
     const { name, parentPhone } = req.query;
 
@@ -47,7 +44,7 @@ exports.searchStudents = async (req, res) => {
     if (name) query.name = { $regex: name, $options: "i" };
     if (parentPhone) query.parentPhone = parentPhone;
 
-    const results = await Student.find(query).sort({ studentId: 1 });
+    const results = await Student.find(query).sort({ name: 1 });
     res.json(results);
 };
 
@@ -84,8 +81,3 @@ exports.deleteStudent = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
-
-// (OPTIONAL) SMS ALERT FUNCTION - you will plug in your provider later
-function sendSMS(phone, message) {
-    console.log("SMS to:", phone, "->", message);
-}
