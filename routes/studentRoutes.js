@@ -9,10 +9,11 @@ const {
 
 const router = express.Router();
 
-router.post("/", createStudent);        // CREATE
-router.get("/", getStudents);           // GET ALL
-router.get("/search", searchStudents);  // SEARCH
-router.put("/:id", updateStudent);      // UPDATE
-router.delete("/:id", deleteStudent);   // DELETE
+// Base path assumed as /students
+router.post("/", createStudent);        // CREATE a new student
+router.get("/", getStudents);           // GET all students
+router.get("/search", searchStudents);  // SEARCH students
+router.put("/:id", updateStudent);      // UPDATE a student by ID
+router.delete("/:id", deleteStudent);   // DELETE a student by ID
 
 module.exports = router;
