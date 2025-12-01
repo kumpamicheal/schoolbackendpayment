@@ -22,8 +22,7 @@ exports.parentLogin = async (req, res) => {
         }
 
         return res.json({
-            message: "Login successful",
-            student
+            message: "Logia
         });
 
     } catch (error) {
