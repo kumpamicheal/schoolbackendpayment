@@ -1,137 +1,120 @@
-import GeneralFee from "../models/GeneralFee.js";
-import OptionalFee from "../models/OptionalFee.js";
-import SpecialFee from "../models/SpecialFee.js";
+const GeneralFee = require("../models/GeneralFee");
+const OptionalFee = require("../models/OptionalFee");
+const SpecialFee = require("../models/SpecialFee");
 
 // =============================
-// GENERAL SCHOOL FEES
+// GENERAL FEES
 // =============================
-
-// Add
-export const addGeneralFee = async (req, res) => {
+exports.addGeneralFee = async (req, res) => {
     try {
         const fee = await GeneralFee.create(req.body);
         res.status(201).json(fee);
-    } catch (error) {
+    } catch {
         res.status(500).json({ message: "Server error" });
     }
 };
 
-// Get all
-export const getGeneralFees = async (req, res) => {
+exports.getGeneralFees = async (req, res) => {
     try {
         const fees = await GeneralFee.find();
         res.json(fees);
-    } catch (error) {
+    } catch {
         res.status(500).json({ message: "Server error" });
     }
 };
 
-// Update
-export const updateGeneralFee = async (req, res) => {
+exports.updateGeneralFee = async (req, res) => {
     try {
         const updated = await GeneralFee.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updated);
-    } catch (error) {
+    } catch {
         res.status(500).json({ message: "Server error" });
     }
 };
 
-// Delete
-export const deleteGeneralFee = async (req, res) => {
+exports.deleteGeneralFee = async (req, res) => {
     try {
         await GeneralFee.findByIdAndDelete(req.params.id);
         res.json({ message: "Deleted" });
-    } catch (error) {
+    } catch {
         res.status(500).json({ message: "Server error" });
     }
 };
-
 
 // =============================
 // OPTIONAL FEES
 // =============================
-
-// Add
-export const addOptionalFee = async (req, res) => {
+exports.addOptionalFee = async (req, res) => {
     try {
         const fee = await OptionalFee.create(req.body);
         res.status(201).json(fee);
-    } catch (error) {
+    } catch {
         res.status(500).json({ message: "Server error" });
     }
 };
 
-// Get all
-export const getOptionalFees = async (req, res) => {
+exports.getOptionalFees = async (req, res) => {
     try {
         const fees = await OptionalFee.find();
         res.json(fees);
-    } catch (error) {
+    } catch {
         res.status(500).json({ message: "Server error" });
     }
 };
 
-// Update
-export const updateOptionalFee = async (req, res) => {
+exports.updateOptionalFee = async (req, res) => {
     try {
         const updated = await OptionalFee.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updated);
-    } catch (error) {
+    } catch {
         res.status(500).json({ message: "Server error" });
     }
 };
 
-// Delete
-export const deleteOptionalFee = async (req, res) => {
+exports.deleteOptionalFee = async (req, res) => {
     try {
         await OptionalFee.findByIdAndDelete(req.params.id);
         res.json({ message: "Deleted" });
-    } catch (error) {
+    } catch {
         res.status(500).json({ message: "Server error" });
     }
 };
 
-
 // =============================
-// SPECIAL FEES (per student)
+// SPECIAL FEES
 // =============================
-
-// Add
-export const addSpecialFee = async (req, res) => {
+exports.addSpecialFee = async (req, res) => {
     try {
         const fee = await SpecialFee.create(req.body);
         res.status(201).json(fee);
-    } catch (error) {
+    } catch {
         res.status(500).json({ message: "Server error" });
     }
 };
 
-// Get all
-export const getSpecialFees = async (req, res) => {
+exports.getSpecialFees = async (req, res) => {
     try {
         const fees = await SpecialFee.find();
         res.json(fees);
-    } catch (error) {
+    } catch {
         res.status(500).json({ message: "Server error" });
     }
 };
 
-// Update
-export const updateSpecialFee = async (req, res) => {
+exports.updateSpecialFee = async (req, res) => {
     try {
         const updated = await SpecialFee.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updated);
-    } catch (error) {
+    } catch {
         res.status(500).json({ message: "Server error" });
     }
 };
 
-// Delete
-export const deleteSpecialFee = async (req, res) => {
+exports.deleteSpecialFee = async (req, res) => {
     try {
         await SpecialFee.findByIdAndDelete(req.params.id);
         res.json({ message: "Deleted" });
-    } catch (error) {
+    } catch {
         res.status(500).json({ message: "Server error" });
     }
 };

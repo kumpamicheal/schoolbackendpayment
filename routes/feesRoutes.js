@@ -1,5 +1,5 @@
-import express from "express";
-import {
+const express = require("express");
+const {
     addGeneralFee,
     getGeneralFees,
     updateGeneralFee,
@@ -13,8 +13,8 @@ import {
     addSpecialFee,
     getSpecialFees,
     updateSpecialFee,
-    deleteSpecialFee,
-} from "../controllers/feesController.js";
+    deleteSpecialFee
+} = require("../controllers/feesController");
 
 const router = express.Router();
 
@@ -36,4 +36,4 @@ router.get("/special", getSpecialFees);
 router.put("/special/:id", updateSpecialFee);
 router.delete("/special/:id", deleteSpecialFee);
 
-export default router;
+module.exports = router;
