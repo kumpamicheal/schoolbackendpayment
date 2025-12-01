@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const SpecialFeeSchema = new mongoose.Schema({
     student: { type: String, required: true },
@@ -7,4 +7,4 @@ const SpecialFeeSchema = new mongoose.Schema({
     amount: { type: Number, required: true }
 }, { timestamps: true });
 
-export default mongoose.model("SpecialFee", SpecialFeeSchema);
+module.exports = mongoose.model("SpecialFee", SpecialFeeSchema);

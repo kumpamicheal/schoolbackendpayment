@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const GeneralFeeSchema = new mongoose.Schema({
     class: { type: String, required: true },
@@ -6,4 +6,4 @@ const GeneralFeeSchema = new mongoose.Schema({
     amount: { type: Number, required: true }
 }, { timestamps: true });
 
-export default mongoose.model("GeneralFee", GeneralFeeSchema);
+module.exports = mongoose.model("GeneralFee", GeneralFeeSchema);
