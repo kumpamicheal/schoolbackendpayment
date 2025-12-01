@@ -1,4 +1,4 @@
-export const generatePaymentCode = () => {
+const generatePaymentCode = () => {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let code = "SCH-";
     for (let i = 0; i < 6; i++) {
@@ -6,3 +6,5 @@ export const generatePaymentCode = () => {
     }
     return code;
 };
+
+module.exports = { generatePaymentCode };
