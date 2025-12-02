@@ -1,5 +1,4 @@
 const School = require("../models/School");
-const bcrypt = require("bcryptjs"); // use bcryptjs consistently
 
 // Create new school account
 const createSchool = async (req, res) => {
@@ -22,10 +21,9 @@ const createSchool = async (req, res) => {
             return res.status(400).json({ message: "Email already registered" });
         }
 
-        // 2. Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // ❗ DO NOT HASH PASSWORD HERE
+        // The School model will hash the password automatically using pre("save")
 
-        // 3. Create school
         const school = await School.create({
             name,
             headTeacher,
@@ -35,7 +33,7 @@ const createSchool = async (req, res) => {
             subscription,
             paymentMethod,
             studentsCount,
-            password: hashedPassword, // hashed password
+            password,   // store raw password, schema will hash
             status: "Active",
         });
 
