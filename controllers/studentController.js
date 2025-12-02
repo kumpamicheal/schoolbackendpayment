@@ -1,6 +1,16 @@
 const Student = require("../models/Student");
 const { generatePaymentCode } = require("../utils/generateCode");
 
+// Helper to generate unique studentId
+const generateStudentId = () => {
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let id = "STU-";
+    for (let i = 0; i < 6; i++) {
+        id += letters[Math.floor(Math.random() * letters.length)];
+    }
+    return id;
+};
+
 // CREATE a new student
 const createStudent = async (req, res) => {
     try {
@@ -10,13 +20,16 @@ const createStudent = async (req, res) => {
             return res.status(400).json({ message: "All fields required" });
         }
 
-        let paymentCode;
+        let paymentCode, studentId;
         let exists = true;
 
-        // Ensure unique payment code
+        // Ensure unique paymentCode and studentId
         while (exists) {
             paymentCode = generatePaymentCode();
-            exists = await Student.findOne({ paymentCode });
+            studentId = generateStudentId();
+            exists = await Student.findOne({
+                $or: [{ paymentCode }, { studentId }]
+            });
         }
 
         const student = await Student.create({
@@ -24,7 +37,8 @@ const createStudent = async (req, res) => {
             classLevel,
             stream,
             parentPhone: parentPhone || "",
-            paymentCode
+            paymentCode,
+            studentId
         });
 
         res.status(201).json(student);
