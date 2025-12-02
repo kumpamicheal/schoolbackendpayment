@@ -1,10 +1,15 @@
 const School = require("../models/School");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs"); // use bcryptjs consistently
 const jwt = require("jsonwebtoken");
 
+// Login for school
 const loginSchool = async (req, res) => {
     try {
         const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email and password are required" });
+        }
 
         // 1. Check if school exists
         const school = await School.findOne({ email });
@@ -12,15 +17,15 @@ const loginSchool = async (req, res) => {
             return res.status(400).json({ message: "School not found" });
         }
 
-        // 2. Compare passwords
+        // 2. Compare password
         const isMatch = await bcrypt.compare(password, school.password);
         if (!isMatch) {
             return res.status(400).json({ message: "Invalid password" });
         }
 
-        // 3. Create JWT token
+        // 3. Generate JWT token
         const token = jwt.sign(
-            { id: school._id },
+            { id: school._id, email: school.email },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );

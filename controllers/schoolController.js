@@ -1,6 +1,7 @@
 const School = require("../models/School");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs"); // use bcryptjs consistently
 
+// Create new school account
 const createSchool = async (req, res) => {
     try {
         const {
@@ -34,7 +35,7 @@ const createSchool = async (req, res) => {
             subscription,
             paymentMethod,
             studentsCount,
-            password: hashedPassword,  // <== save hashed password
+            password: hashedPassword, // hashed password
             status: "Active",
         });
 
@@ -44,7 +45,7 @@ const createSchool = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
+        console.error("Create School Error:", error);
         res.status(500).json({ message: "Server Error" });
     }
 };
