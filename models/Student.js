@@ -5,6 +5,7 @@ const studentSchema = new mongoose.Schema({
     classLevel: { type: String, required: true },
     stream: { type: String, required: true },
     paymentCode: { type: String, required: true, unique: true },
+    studentId: { type: String, required: true, unique: true },
     parentPhone: { type: String, default: "" }
 });
 
