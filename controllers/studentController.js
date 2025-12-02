@@ -20,6 +20,10 @@ const createStudent = async (req, res) => {
             return res.status(400).json({ message: "All fields required" });
         }
 
+        if (!req.user || !req.user.schoolId) {
+            return res.status(401).json({ message: "Unauthorized: Missing school ID" });
+        }
+
         let paymentCode, studentId;
         let exists = true;
 
@@ -38,7 +42,8 @@ const createStudent = async (req, res) => {
             stream,
             parentPhone: parentPhone || "",
             paymentCode,
-            studentId
+            studentId,
+            schoolId: req.user.schoolId // <-- link student to the school
         });
 
         res.status(201).json(student);
@@ -48,10 +53,14 @@ const createStudent = async (req, res) => {
     }
 };
 
-// GET all students
+// GET all students for the logged-in school
 const getStudents = async (req, res) => {
     try {
-        const students = await Student.find();
+        if (!req.user || !req.user.schoolId) {
+            return res.status(401).json({ message: "Unauthorized: Missing school ID" });
+        }
+
+        const students = await Student.find({ schoolId: req.user.schoolId });
         res.status(200).json(students);
     } catch (err) {
         console.error("GET STUDENTS ERROR:", err);
@@ -59,16 +68,20 @@ const getStudents = async (req, res) => {
     }
 };
 
-// UPDATE a student by ID
+// UPDATE a student by ID (only if belongs to logged-in school)
 const updateStudent = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body;
 
-        const student = await Student.findByIdAndUpdate(id, updateData, { new: true });
+        const student = await Student.findOneAndUpdate(
+            { _id: id, schoolId: req.user.schoolId },
+            updateData,
+            { new: true }
+        );
 
         if (!student) {
-            return res.status(404).json({ message: "Student not found" });
+            return res.status(404).json({ message: "Student not found or unauthorized" });
         }
 
         res.status(200).json(student);
@@ -78,14 +91,18 @@ const updateStudent = async (req, res) => {
     }
 };
 
-// DELETE a student by ID
+// DELETE a student by ID (only if belongs to logged-in school)
 const deleteStudent = async (req, res) => {
     try {
         const { id } = req.params;
-        const student = await Student.findByIdAndDelete(id);
+
+        const student = await Student.findOneAndDelete({
+            _id: id,
+            schoolId: req.user.schoolId
+        });
 
         if (!student) {
-            return res.status(404).json({ message: "Student not found" });
+            return res.status(404).json({ message: "Student not found or unauthorized" });
         }
 
         res.status(200).json({ message: "Student deleted successfully" });
@@ -95,13 +112,17 @@ const deleteStudent = async (req, res) => {
     }
 };
 
-// SEARCH students by name, classLevel, or stream
+// SEARCH students by name, classLevel, or stream (for logged-in school)
 const searchStudents = async (req, res) => {
     try {
         const { q } = req.query;
         if (!q) return res.status(400).json({ message: "Query parameter 'q' is required" });
+        if (!req.user || !req.user.schoolId) {
+            return res.status(401).json({ message: "Unauthorized: Missing school ID" });
+        }
 
         const students = await Student.find({
+            schoolId: req.user.schoolId,
             $or: [
                 { name: { $regex: q, $options: "i" } },
                 { classLevel: { $regex: q, $options: "i" } },
