@@ -7,7 +7,11 @@ const SpecialFee = require("../models/SpecialFee");
 // =============================
 exports.addGeneralFee = async (req, res) => {
     try {
-        const fee = await GeneralFee.create(req.body);
+        const fee = await GeneralFee.create({
+            ...req.body,
+            schoolId: req.user.schoolId
+        });
+
         res.status(201).json(fee);
     } catch (error) {
         console.error("Error adding general fee:", error);
@@ -17,7 +21,7 @@ exports.addGeneralFee = async (req, res) => {
 
 exports.getGeneralFees = async (req, res) => {
     try {
-        const fees = await GeneralFee.find();
+        const fees = await GeneralFee.find({ schoolId: req.user.schoolId });
         res.json(fees);
     } catch (error) {
         console.error("Error fetching general fees:", error);
@@ -27,8 +31,15 @@ exports.getGeneralFees = async (req, res) => {
 
 exports.updateGeneralFee = async (req, res) => {
     try {
-        const updated = await GeneralFee.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!updated) return res.status(404).json({ message: "General fee not found" });
+        const updated = await GeneralFee.findOneAndUpdate(
+            { _id: req.params.id, schoolId: req.user.schoolId },
+            req.body,
+            { new: true }
+        );
+
+        if (!updated)
+            return res.status(404).json({ message: "General fee not found or unauthorized" });
+
         res.json(updated);
     } catch (error) {
         console.error("Error updating general fee:", error);
@@ -38,7 +49,14 @@ exports.updateGeneralFee = async (req, res) => {
 
 exports.deleteGeneralFee = async (req, res) => {
     try {
-        await GeneralFee.findByIdAndDelete(req.params.id);
+        const deleted = await GeneralFee.findOneAndDelete({
+            _id: req.params.id,
+            schoolId: req.user.schoolId
+        });
+
+        if (!deleted)
+            return res.status(404).json({ message: "Not found or unauthorized" });
+
         res.json({ message: "Deleted" });
     } catch (error) {
         console.error("Error deleting general fee:", error);
@@ -51,7 +69,11 @@ exports.deleteGeneralFee = async (req, res) => {
 // =============================
 exports.addOptionalFee = async (req, res) => {
     try {
-        const fee = await OptionalFee.create(req.body);
+        const fee = await OptionalFee.create({
+            ...req.body,
+            schoolId: req.user.schoolId
+        });
+
         res.status(201).json(fee);
     } catch (error) {
         console.error("Error adding optional fee:", error);
@@ -61,7 +83,7 @@ exports.addOptionalFee = async (req, res) => {
 
 exports.getOptionalFees = async (req, res) => {
     try {
-        const fees = await OptionalFee.find();
+        const fees = await OptionalFee.find({ schoolId: req.user.schoolId });
         res.json(fees);
     } catch (error) {
         console.error("Error fetching optional fees:", error);
@@ -71,8 +93,15 @@ exports.getOptionalFees = async (req, res) => {
 
 exports.updateOptionalFee = async (req, res) => {
     try {
-        const updated = await OptionalFee.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!updated) return res.status(404).json({ message: "Optional fee not found" });
+        const updated = await OptionalFee.findOneAndUpdate(
+            { _id: req.params.id, schoolId: req.user.schoolId },
+            req.body,
+            { new: true }
+        );
+
+        if (!updated)
+            return res.status(404).json({ message: "Optional fee not found or unauthorized" });
+
         res.json(updated);
     } catch (error) {
         console.error("Error updating optional fee:", error);
@@ -82,7 +111,14 @@ exports.updateOptionalFee = async (req, res) => {
 
 exports.deleteOptionalFee = async (req, res) => {
     try {
-        await OptionalFee.findByIdAndDelete(req.params.id);
+        const deleted = await OptionalFee.findOneAndDelete({
+            _id: req.params.id,
+            schoolId: req.user.schoolId
+        });
+
+        if (!deleted)
+            return res.status(404).json({ message: "Not found or unauthorized" });
+
         res.json({ message: "Deleted" });
     } catch (error) {
         console.error("Error deleting optional fee:", error);
@@ -95,7 +131,11 @@ exports.deleteOptionalFee = async (req, res) => {
 // =============================
 exports.addSpecialFee = async (req, res) => {
     try {
-        const fee = await SpecialFee.create(req.body);
+        const fee = await SpecialFee.create({
+            ...req.body,
+            schoolId: req.user.schoolId
+        });
+
         res.status(201).json(fee);
     } catch (error) {
         console.error("Error adding special fee:", error);
@@ -105,7 +145,7 @@ exports.addSpecialFee = async (req, res) => {
 
 exports.getSpecialFees = async (req, res) => {
     try {
-        const fees = await SpecialFee.find();
+        const fees = await SpecialFee.find({ schoolId: req.user.schoolId });
         res.json(fees);
     } catch (error) {
         console.error("Error fetching special fees:", error);
@@ -115,8 +155,15 @@ exports.getSpecialFees = async (req, res) => {
 
 exports.updateSpecialFee = async (req, res) => {
     try {
-        const updated = await SpecialFee.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!updated) return res.status(404).json({ message: "Special fee not found" });
+        const updated = await SpecialFee.findOneAndUpdate(
+            { _id: req.params.id, schoolId: req.user.schoolId },
+            req.body,
+            { new: true }
+        );
+
+        if (!updated)
+            return res.status(404).json({ message: "Special fee not found or unauthorized" });
+
         res.json(updated);
     } catch (error) {
         console.error("Error updating special fee:", error);
@@ -126,7 +173,14 @@ exports.updateSpecialFee = async (req, res) => {
 
 exports.deleteSpecialFee = async (req, res) => {
     try {
-        await SpecialFee.findByIdAndDelete(req.params.id);
+        const deleted = await SpecialFee.findOneAndDelete({
+            _id: req.params.id,
+            schoolId: req.user.schoolId
+        });
+
+        if (!deleted)
+            return res.status(404).json({ message: "Not found or unauthorized" });
+
         res.json({ message: "Deleted" });
     } catch (error) {
         console.error("Error deleting special fee:", error);
