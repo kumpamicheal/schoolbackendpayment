@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const School = require("../models/School");
 const bcrypt = require("bcryptjs");
 
-exports.login = async (req, res) => {
+exports.loginSchool = async (req, res) => {
     try {
         const { email, password } = req.body;
 
