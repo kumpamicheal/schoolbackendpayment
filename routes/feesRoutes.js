@@ -16,24 +16,26 @@ const {
     deleteSpecialFee
 } = require("../controllers/feesController");
 
+const authMiddleware = require("../middleware/authMiddleware"); // <-- import
+
 const router = express.Router();
 
 // General Fees
-router.post("/general", addGeneralFee);
-router.get("/general", getGeneralFees);
-router.put("/general/:id", updateGeneralFee);
-router.delete("/general/:id", deleteGeneralFee);
+router.post("/general", authMiddleware, addGeneralFee);
+router.get("/general", authMiddleware, getGeneralFees);
+router.put("/general/:id", authMiddleware, updateGeneralFee);
+router.delete("/general/:id", authMiddleware, deleteGeneralFee);
 
 // Optional Fees
-router.post("/optional", addOptionalFee);
-router.get("/optional", getOptionalFees);
-router.put("/optional/:id", updateOptionalFee);
-router.delete("/optional/:id", deleteOptionalFee);
+router.post("/optional", authMiddleware, addOptionalFee);
+router.get("/optional", authMiddleware, getOptionalFees);
+router.put("/optional/:id", authMiddleware, updateOptionalFee);
+router.delete("/optional/:id", authMiddleware, deleteOptionalFee);
 
 // Special Fees
-router.post("/special", addSpecialFee);
-router.get("/special", getSpecialFees);
-router.put("/special/:id", updateSpecialFee);
-router.delete("/special/:id", deleteSpecialFee);
+router.post("/special", authMiddleware, addSpecialFee);
+router.get("/special", authMiddleware, getSpecialFees);
+router.put("/special/:id", authMiddleware, updateSpecialFee);
+router.delete("/special/:id", authMiddleware, deleteSpecialFee);
 
 module.exports = router;
