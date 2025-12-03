@@ -39,9 +39,10 @@ app.use("/api/company", require("./routes/companyRoutes"));
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/parent", require("./routes/parentRoutes"));
 app.use("/api/students", require("./routes/studentRoutes"));
-
-// ✅ NEW: Fees routes (added exactly as you requested)
 app.use("/api/fees", require("./routes/feesRoutes"));
+
+// ✅ NEW: Transactions route
+app.use("/api/transactions", require("./routes/transactionsRoutes"));
 
 // Root route for testing
 app.get("/", (req, res) => {
