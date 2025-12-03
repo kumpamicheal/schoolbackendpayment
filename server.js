@@ -41,8 +41,6 @@ app.use("/api/parent", require("./routes/parentRoutes"));
 app.use("/api/students", require("./routes/studentRoutes"));
 app.use("/api/fees", require("./routes/feesRoutes"));
 
-// ✅ NEW: Transactions route
-app.use("/api/transactions", require("./routes/transactionsRoutes"));
 
 // Root route for testing
 app.get("/", (req, res) => {
