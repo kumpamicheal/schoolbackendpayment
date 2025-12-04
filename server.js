@@ -40,6 +40,7 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/parent", require("./routes/parentRoutes"));
 app.use("/api/students", require("./routes/studentRoutes"));
 app.use("/api/fees", require("./routes/feesRoutes"));
+app.use("/api/studentFeeRoutes", require("./routes/studentFeeRoutes"));
 
 
 // Root route for testing
