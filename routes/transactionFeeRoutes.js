@@ -18,9 +18,9 @@ router.get("/student-amount/:id", authMiddleware, async (req, res) => {
             return res.status(404).json({ message: "Student not found" });
         }
 
-        // Check for special fee first (priority)
+        // 1️⃣ Check for special fee first (priority)
         const special = await SpecialFee.findOne({
-            student: student._id.toString(), // use 'student' field from schema
+            student: student._id.toString(), // matches your schema
             schoolId: req.user.schoolId
         });
 
@@ -28,9 +28,9 @@ router.get("/student-amount/:id", authMiddleware, async (req, res) => {
             return res.json({ amount: special.amount });
         }
 
-        // Fallback to general fee for the student's class
+        // 2️⃣ Fallback to general fee for the student's class
         const general = await GeneralFee.findOne({
-            class: student.classLevel, // match field to your schema ('class')
+            class: student.classLevel, // match field to your schema
             schoolId: req.user.schoolId
         });
 
@@ -38,7 +38,7 @@ router.get("/student-amount/:id", authMiddleware, async (req, res) => {
             return res.json({ amount: general.amount });
         }
 
-        // If neither exists, return 0
+        // 3️⃣ If neither exists, return 0
         res.json({ amount: 0 });
 
     } catch (error) {
