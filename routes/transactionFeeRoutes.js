@@ -20,7 +20,7 @@ router.get("/student-amount/:id", authMiddleware, async (req, res) => {
 
         // Check for special fee first (priority)
         const special = await SpecialFee.findOne({
-            studentId: student._id.toString(), // ensure type match if stored as string
+            student: student._id.toString(), // use 'student' field from schema
             schoolId: req.user.schoolId
         });
 
