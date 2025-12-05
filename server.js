@@ -42,6 +42,8 @@ app.use("/api/students", require("./routes/studentRoutes"));
 app.use("/api/fees", require("./routes/feesRoutes"));
 app.use("/api/transactionFeeRoutes", require("./routes/transactionFeeRoutes"));
 app.use("/api/myschool", require("./routes/mySchoolRoutes"));
+app.use("/api/momo", require("./routes/momoRoutes"));
+app.use("/api/momo-setup", require("./routes/momoSetupRoutes"));
 
 
 // Root route for testing
