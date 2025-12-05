@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { requestToPay, checkPaymentStatus } = require("../controllers/paymentController");
+const { requestToPay, checkPaymentStatus } = require("../controllers/momoController");
+
 
 // POST /api/momo/request => initiate payment
 router.post("/request", requestToPay);
