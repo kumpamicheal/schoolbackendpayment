@@ -11,29 +11,42 @@ connectDB();
 
 const app = express();
 
-// ✅ CORS Configuration
+// ----------------------------------------
+// ✅ CORS FIX (WORKS WITH LOCALHOST + RENDER)
+// ----------------------------------------
 const allowedOrigins = [
-    "http://localhost:3000", // React dev server
-    "https://your-frontend-deployed-url.onrender.com" // Your deployed frontend URL
+    "http://localhost:3000",                     // React Dev Server
+    "https://schoolbackendpayment.onrender.com", // Your backend deployed URL
 ];
 
 app.use(cors({
-    origin: function(origin, callback) {
-        // allow requests with no origin (like Postman)
+    origin: function (origin, callback) {
+        // Allow requests like Postman with no origin
         if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = "The CORS policy for this site does not allow access from the specified Origin.";
+
+        if (!allowedOrigins.includes(origin)) {
+            const msg = "❌ CORS BLOCKED: Origin not allowed";
             return callback(new Error(msg), false);
         }
+
         return callback(null, true);
     },
-    credentials: true // required if you use cookies/auth
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type, Authorization",
+    credentials: true,
 }));
 
-// ✅ Middleware to parse JSON
+// Handle Preflight OPTIONS Requests (IMPORTANT!)
+app.options("*", cors());
+
+// ----------------------------------------
+// Middleware
+// ----------------------------------------
 app.use(express.json());
 
-// ✅ Routes
+// ----------------------------------------
+// Routes
+// ----------------------------------------
 app.use("/api/schools", require("./routes/schoolRoutes"));
 app.use("/api/company", require("./routes/companyRoutes"));
 app.use("/api/auth", require("./routes/authRoutes"));
@@ -44,13 +57,15 @@ app.use("/api/transactionFeeRoutes", require("./routes/transactionFeeRoutes"));
 app.use("/api/myschool", require("./routes/mySchoolRoutes"));
 app.use("/api/payments", require("./routes/paymentRoutes"));
 
-
-
-// Root route for testing
+// Test Route
 app.get("/", (req, res) => {
     res.send("API is running...");
 });
 
-// Start server
+// ----------------------------------------
+// Start Server
+// ----------------------------------------
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`✅ Server running on port ${PORT}`);
+});
