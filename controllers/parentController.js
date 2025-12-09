@@ -11,19 +11,18 @@ exports.parentLogin = async (req, res) => {
             return res.status(400).json({ message: "Phone and payment code are required" });
         }
 
-        // Find student by phone & payment code from Student model
+        // Find student by phone & payment code
         const student = await Student.findOne({
             parentPhone: phone,
-            paymentCode: paymentCode
+            paymentCode
         });
 
         if (!student) {
             return res.status(404).json({ message: "Invalid phone or payment code" });
         }
 
-        return res.json({
-            message: "Login"
-        });
+        // Return the student object so frontend can store it
+        return res.status(200).json({ student });
 
     } catch (error) {
         console.error("Login Error:", error);
