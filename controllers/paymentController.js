@@ -92,7 +92,7 @@ async function requestToPay(req, res) {
             "https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay",
             {
                 amount: amount.toString(),
-                currency: "UGX",
+                currency: "USD",
                 externalId,
                 payer: { partyIdType: "MSISDN", partyId: phone },
                 payerMessage: payment.payerMessage,
