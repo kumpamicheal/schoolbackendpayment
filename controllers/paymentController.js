@@ -1,5 +1,5 @@
 const axios = require("axios");
-const Payments = require("../models/Payments");
+const Payments = require("../models/Payment");
 
 // ---------------------------------------------
 // PHONE NORMALIZER
