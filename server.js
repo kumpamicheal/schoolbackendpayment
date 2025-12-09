@@ -12,23 +12,20 @@ connectDB();
 const app = express();
 
 // ----------------------------------------
-// ✅ CORS FIX (WORKS WITH LOCALHOST + RENDER)
+// ✅ CORS FIX (LOCALHOST + RENDER)
 // ----------------------------------------
 const allowedOrigins = [
-    "http://localhost:3000",                     // React Dev Server
-    "https://schoolbackendpayment.onrender.com", // Your backend deployed URL
+    "http://localhost:3000",
+    "https://schoolbackendpayment.onrender.com",
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests like Postman with no origin
-        if (!origin) return callback(null, true);
-
+        if (!origin) return callback(null, true); // Postman / server-to-server
         if (!allowedOrigins.includes(origin)) {
             const msg = "❌ CORS BLOCKED: Origin not allowed";
             return callback(new Error(msg), false);
         }
-
         return callback(null, true);
     },
     methods: "GET,POST,PUT,DELETE",
@@ -36,8 +33,7 @@ app.use(cors({
     credentials: true,
 }));
 
-// Handle Preflight OPTIONS Requests (IMPORTANT!)
-app.options("*", cors());
+
 
 // ----------------------------------------
 // Middleware
