@@ -6,8 +6,8 @@ const paymentSchema = new mongoose.Schema({
     amount: { type: Number, required: true },
     phone: { type: String, required: true },
     externalId: { type: String, required: true, unique: true },
-    status: { type: String, enum: ["Pending", "Completed", "Failed"], default: "Pending" },
-    payerMessage: { type: String },
+    status: { type: String, enum: ["pending", "failed", "Success"]},
+        payerMessage: { type: String },
     payeeNote: { type: String },
     createdAt: { type: Date, default: Date.now }
 });
