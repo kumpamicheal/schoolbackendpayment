@@ -1,70 +1,59 @@
 const Payments = require("../models/Payment");
-const Student = require("../models/Student");
-const GeneralFee = require("../models/GeneralFee");
-const SpecialFee = require("../models/SpecialFee");
 
-// -------------------------------------------------------------
-// MOCK REQUEST-TO-PAY (Required by your routes)
-// -------------------------------------------------------------
-exports.requestToPay = async (req, res) => {
-    try {
-        // This is temporary mock logic
-        res.status(200).json({
-            message: "Mock requestToPay received successfully",
-            status: "PENDING",
-            referenceId: Date.now().toString()
-        });
-    } catch (err) {
-        console.error("REQUEST TO PAY ERROR:", err);
-        res.status(500).json({ message: "Server error", error: err.message });
+// ---------------------------------------------
+// PHONE NORMALIZER
+// Ensures MTN Uganda format is always 2567XXXXXXX
+// ---------------------------------------------
+function normalizePhone(phone) {
+    let cleaned = phone.trim();
+
+    if (cleaned.startsWith("+256")) {
+        cleaned = cleaned.replace("+256", "256");
+    } else if (cleaned.startsWith("0")) {
+        cleaned = "256" + cleaned.substring(1);
+    } else if (cleaned.startsWith("256")) {
+        // already correct
+    } else {
+        cleaned = "256" + cleaned;
     }
-};
 
-// -------------------------------------------------------------
-// MAKE PAYMENT
-// -------------------------------------------------------------
-exports.makePayment = async (req, res) => {
+    return cleaned;
+}
+
+// ---------------------------------------------
+// MOCKED REQUEST TO PAY CONTROLLER
+// ---------------------------------------------
+const requestToPay = async (req, res) => {
     try {
-        const { studentId, schoolId, amount, method } = req.body;
+        const { amount, phone, externalId, mock, studentId, schoolId } = req.body;
 
-        if (!studentId || !schoolId || !amount) {
-            return res.status(400).json({ message: "Missing required fields" });
-        }
+        // Normalize phone
+        const normalizedPhone = normalizePhone(phone);
+        console.log("Normalized phone:", normalizedPhone);
 
-        const student = await Student.findOne({ _id: studentId, schoolId });
-        if (!student) return res.status(404).json({ message: "Student not found" });
+        // MOCK MODE
+        console.log("⚠️ MOCK MODE ENABLED — No MTN Request Sent");
 
-        // Create payment record (mocked as Success for now)
-        const payment = await Payments.create({
-            studentId,
-            schoolId,
+        // SAVE PAYMENT (Fix missing fields + status enum)
+        await Payments.create({
+            studentId,        // <-- REQUIRED (ADDED)
+            schoolId,         // <-- REQUIRED (ADDED)
+            phone: normalizedPhone,
             amount,
-            method,
-            status: "Success",
-            providerMessage: "Mock payment successful"
+            externalId,
+            status: "Pending", // <-- FIXED ENUM ("Pending" not "PENDING")
+            providerMessage: "MTN mock successful"
         });
 
-        // Calculate fees dynamically
-        let fees = student.specialCase
-            ? await SpecialFee.find({ schoolId: student.schoolId, classLevel: student.classLevel })
-            : await GeneralFee.find({ schoolId: student.schoolId, classLevel: student.classLevel });
-
-        const totalFees = fees.reduce((acc, f) => acc + f.amount, 0);
-
-        // Sum all successful payments
-        const payments = await Payments.find({ studentId: student._id, status: "Success" });
-        const paidAmount = payments.reduce((acc, p) => acc + p.amount, 0);
-        const balance = totalFees - paidAmount;
-
-        res.status(201).json({
-            message: "Payment successful",
-            payment,
-            totalFees,
-            paidAmount,
-            balance
+        return res.status(200).json({
+            message: "MOCK: MTN request simulated",
+            externalId,
+            phone: normalizedPhone
         });
-    } catch (err) {
-        console.error("MAKE PAYMENT ERROR:", err);
-        res.status(500).json({ message: "Server error", error: err.message });
+    } catch (error) {
+        console.log("Payment Error:", error.message);
+        res.status(500).json({ message: "Payment failed", error: error.message });
     }
 };
+
+module.exports = { requestToPay };

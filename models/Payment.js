@@ -1,15 +1,19 @@
 const mongoose = require("mongoose");
 
-const paymentSchema = new mongoose.Schema({
-    studentId: { type: mongoose.Schema.Types.ObjectId, ref: "Student", required: true },
-    schoolId: { type: mongoose.Schema.Types.ObjectId, ref: "School", required: true },
-    amount: { type: Number, required: true },
+const PaymentSchema = new mongoose.Schema({
+    studentId: { type: String, required: true },   // added
+    schoolId: { type: String, required: true },    // added
     phone: { type: String, required: true },
-    externalId: { type: String, required: true, unique: true },
-    status: { type: String, enum: ["pending", "failed", "Success"]},
-        payerMessage: { type: String },
-    payeeNote: { type: String },
+    amount: { type: Number, required: true },
+    method: { type: String, required: true },
+    status: {
+        type: String,
+        enum: ["pending", "failed", "Success"],    // pending + failed + Success
+        default: "pending"                         // default to lowercase pending
+    },
+    externalId: { type: String },                  // optional externalId
+    providerMessage: { type: String },             // optional message
     createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model("Payment", paymentSchema);
+module.exports = mongoose.model("Payment", PaymentSchema);
