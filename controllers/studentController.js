@@ -137,12 +137,10 @@ const searchStudents = async (req, res) => {
     }
 };
 
-
 module.exports = {
     createStudent,
     getStudents,
     updateStudent,
     deleteStudent,
-    searchStudents,
-
+    searchStudents
 };
