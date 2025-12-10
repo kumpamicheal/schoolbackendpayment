@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { requestToPay, makePayment } = require("../controllers/paymentsController");
+const { requestToPay, makePayment } = require("../controllers/paymentController");
 
 // Existing mock request
 router.post("/request", requestToPay);
