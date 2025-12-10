@@ -3,7 +3,26 @@ const Student = require("../models/Student");
 const GeneralFee = require("../models/GeneralFee");
 const SpecialFee = require("../models/SpecialFee");
 
+// -------------------------------------------------------------
+// MOCK REQUEST-TO-PAY (Required by your routes)
+// -------------------------------------------------------------
+exports.requestToPay = async (req, res) => {
+    try {
+        // This is temporary mock logic
+        res.status(200).json({
+            message: "Mock requestToPay received successfully",
+            status: "PENDING",
+            referenceId: Date.now().toString()
+        });
+    } catch (err) {
+        console.error("REQUEST TO PAY ERROR:", err);
+        res.status(500).json({ message: "Server error", error: err.message });
+    }
+};
+
+// -------------------------------------------------------------
 // MAKE PAYMENT
+// -------------------------------------------------------------
 exports.makePayment = async (req, res) => {
     try {
         const { studentId, schoolId, amount, method } = req.body;
