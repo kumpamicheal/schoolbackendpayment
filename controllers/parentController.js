@@ -21,8 +21,15 @@ exports.parentLogin = async (req, res) => {
             return res.status(404).json({ message: "Invalid phone or payment code" });
         }
 
-        // Return the student object so frontend can store it
-        return res.status(200).json({ student });
+        // Return the student object including schoolId so frontend can store it
+        return res.status(200).json({
+            student: {
+                _id: student._id,
+                studentId: student.studentId,
+                parentPhone: student.parentPhone,
+                schoolId: student.schoolId // ✅ added
+            }
+        });
 
     } catch (error) {
         console.error("Login Error:", error);
