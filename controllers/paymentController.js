@@ -14,7 +14,6 @@ function normalizePhone(phone) {
     } else if (cleaned.startsWith("256")) {
         // already correct
     } else {
-        // fallback (not recommended but safe)
         cleaned = "256" + cleaned;
     }
 
@@ -26,7 +25,7 @@ function normalizePhone(phone) {
 // ---------------------------------------------
 const requestToPay = async (req, res) => {
     try {
-        const { amount, phone, externalId, mock } = req.body;
+        const { amount, phone, externalId, mock, studentId, schoolId } = req.body;
 
         // Normalize phone
         const normalizedPhone = normalizePhone(phone);
@@ -35,11 +34,14 @@ const requestToPay = async (req, res) => {
         // MOCK MODE
         console.log("⚠️ MOCK MODE ENABLED — No MTN Request Sent");
 
+        // SAVE PAYMENT (Fix missing fields + status enum)
         await Payments.create({
+            studentId,        // <-- REQUIRED (ADDED)
+            schoolId,         // <-- REQUIRED (ADDED)
             phone: normalizedPhone,
             amount,
             externalId,
-            status: "PENDING",
+            status: "Pending", // <-- FIXED ENUM ("Pending" not "PENDING")
             providerMessage: "MTN mock successful"
         });
 
