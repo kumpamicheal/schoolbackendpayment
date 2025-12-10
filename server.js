@@ -52,6 +52,7 @@ app.use("/api/fees", require("./routes/feesRoutes"));
 app.use("/api/transactionFeeRoutes", require("./routes/transactionFeeRoutes"));
 app.use("/api/myschool", require("./routes/mySchoolRoutes"));
 app.use("/api/payments", require("./routes/paymentRoutes"));
+app.use("/api/payments/history", require("./routes/paymentHistoryRoutes"));
 
 // Test Route
 app.get("/", (req, res) => {
