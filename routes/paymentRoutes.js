@@ -1,11 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const { requestToPay, makePayment } = require("../controllers/paymentController");
 
-// Existing mock request
-router.post("/request", requestToPay);
+// Import controller functions
+const paymentController = require("../controllers/paymentController");
 
-// New endpoint to actually make payment and update balance
-router.post("/make", makePayment);
+// Make sure these exist and are functions
+const { requestToPay, makePayment } = paymentController;
+
+// Validate that imported handlers are functions
+if (typeof requestToPay !== "function") {
+    throw new Error("requestToPay must be a function in paymentController");
+}
+if (typeof makePayment !== "function") {
+    throw new Error("makePayment must be a function in paymentController");
+}
+
+// Routes
+router.post("/request", requestToPay);   // Request payment
+router.post("/make", makePayment);       // Make payment
 
 module.exports = router;
