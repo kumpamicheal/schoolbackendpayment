@@ -4,7 +4,8 @@ const {
     getStudents,
     updateStudent,
     deleteStudent,
-    searchStudents
+    searchStudents,
+    getStudentProfile  // ✅ import the new controller function
 } = require("../controllers/studentController");
 const authMiddleware = require("../middleware/authMiddleware");
 
@@ -16,5 +17,10 @@ router.get("/", authMiddleware, getStudents);           // GET all students
 router.get("/search", authMiddleware, searchStudents);  // SEARCH students
 router.put("/:id", authMiddleware, updateStudent);      // UPDATE a student by ID
 router.delete("/:id", authMiddleware, deleteStudent);   // DELETE a student by ID
+
+// ----------------------------
+// NEW: GET a single student profile by ID
+// ----------------------------
+router.get("/profile/:studentId", authMiddleware, getStudentProfile);
 
 module.exports = router;

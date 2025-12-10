@@ -1,13 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { requestToPay } = require("../controllers/paymentController");
+const { requestToPay, makePayment } = require("../controllers/paymentsController");
 
-// Parent triggers payment (mocked)
+// Existing mock request
 router.post("/request", requestToPay);
 
-// -----------------------------
-// Commented out MTN callback route since we're mocking
-// router.post("/callback", paymentCallback);
-// -----------------------------
+// New endpoint to actually make payment and update balance
+router.post("/make", makePayment);
 
 module.exports = router;

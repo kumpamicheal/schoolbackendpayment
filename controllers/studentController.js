@@ -137,10 +137,30 @@ const searchStudents = async (req, res) => {
     }
 };
 
+// ----------------------------
+// NEW: GET single student profile
+// ----------------------------
+const getStudentProfile = async (req, res) => {
+    try {
+        const { studentId } = req.params;
+        const student = await Student.findById(studentId);
+
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+
+        res.json({ student });
+    } catch (err) {
+        console.error("GET STUDENT PROFILE ERROR:", err);
+        res.status(500).json({ message: "Server error", error: err.message });
+    }
+};
+
 module.exports = {
     createStudent,
     getStudents,
     updateStudent,
     deleteStudent,
-    searchStudents
+    searchStudents,
+    getStudentProfile  // ✅ export the new function
 };
