@@ -1,20 +1,12 @@
-// routes/studentRoutes.js
+// routes/studentProfileRoutes.js
 const express = require("express");
 const router = express.Router();
 
-// Import correct controllers
+// Import profile controller
 const { getStudentProfile } = require("../controllers/studentProfileController");
-const { getStudents, createStudent, updateStudent, deleteStudent } = require("../controllers/studentController");
+const { protect } = require("../middleware/authMiddleware");
 
-const { protect } = require("../middleware/authMiddleware"); // ensures req.user.schoolId is available
-
-// Fetch student profile
-router.get("/profile/:studentId", protect, getStudentProfile);
-
-// Other student routes
-router.post("/", protect, createStudent);
-router.get("/", protect, getStudents);
-router.put("/:id", protect, updateStudent);
-router.delete("/:id", protect, deleteStudent);
+// Student profile route
+router.get("/:studentId", protect, getStudentProfile);
 
 module.exports = router;

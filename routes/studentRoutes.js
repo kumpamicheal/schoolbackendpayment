@@ -1,22 +1,23 @@
+// routes/studentRoutes.js
 const express = require("express");
+const router = express.Router();
+
+// Import controllers
 const {
     createStudent,
     getStudents,
     updateStudent,
     deleteStudent,
-    searchStudents,
-    getStudentProfile  // ✅ import the new controller function
+    searchStudents
 } = require("../controllers/studentController");
-const authMiddleware = require("../middleware/authMiddleware");
 
-const router = express.Router();
+const { protect } = require("../middleware/authMiddleware");
 
-// All routes now require the school to be logged in
-router.post("/", authMiddleware, createStudent);        // CREATE a new student
-router.get("/", authMiddleware, getStudents);           // GET all students
-router.get("/search", authMiddleware, searchStudents);  // SEARCH students
-router.put("/:id", authMiddleware, updateStudent);      // UPDATE a student by ID
-router.delete("/:id", authMiddleware, deleteStudent);   // DELETE a student by ID
-
+// All student CRUD routes (no profile here)
+router.post("/", protect, createStudent);        // CREATE a new student
+router.get("/", protect, getStudents);           // GET all students
+router.get("/search", protect, searchStudents);  // SEARCH students
+router.put("/:id", protect, updateStudent);      // UPDATE a student by ID
+router.delete("/:id", protect, deleteStudent);   // DELETE a student by ID
 
 module.exports = router;
