@@ -1,6 +1,7 @@
 const Student = require("../models/Student");
 const School = require("../models/School"); // ✅ Import School model
-const Fees = require("../models/Fees");     // ✅ Import Fees model
+const GeneralFee = require("../models/GeneralFee"); // ✅ Corrected model name
+const SpecialFee = require("../models/SpecialFee"); // ✅ Corrected model name
 
 exports.getStudentProfile = async (req, res) => {
     try {
@@ -21,8 +22,7 @@ exports.getStudentProfile = async (req, res) => {
         let amount = 0;
 
         // First check for special fees assigned to the student
-        const specialFee = await Fees.findOne({
-            type: "special",
+        const specialFee = await SpecialFee.findOne({
             studentId: student._id
         });
 
@@ -30,8 +30,7 @@ exports.getStudentProfile = async (req, res) => {
             amount = specialFee.amount;
         } else {
             // Otherwise, fallback to general fee for the student's class
-            const generalFee = await Fees.findOne({
-                type: "general",
+            const generalFee = await GeneralFee.findOne({
                 classLevel: student.classLevel
             });
             if (generalFee) amount = generalFee.amount;
@@ -41,9 +40,9 @@ exports.getStudentProfile = async (req, res) => {
             name: student.name,
             classLevel: student.classLevel,
             stream: student.stream,
-            parentPhone: student.parentPhone,   // ✅ Already included
-            school: schoolName,                 // ✅ Already added
-            amount                              // ✅ Newly added fee amount
+            parentPhone: student.parentPhone,
+            school: schoolName,
+            amount
         });
 
     } catch (error) {
