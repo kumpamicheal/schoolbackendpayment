@@ -6,6 +6,7 @@ const SpecialFee = require("../models/SpecialFee"); // ✅ Corrected model name
 exports.getStudentProfile = async (req, res) => {
     try {
         const student = await Student.findById(req.params.id);
+        console.log("Fetched student:", student); // ✅ Debug log
 
         if (!student) {
             return res.status(404).json({ message: "Student not found" });
@@ -15,6 +16,7 @@ exports.getStudentProfile = async (req, res) => {
         let schoolName = "Unknown School";
         if (student.schoolId) {
             const school = await School.findById(student.schoolId);
+            console.log("Fetched school:", school); // ✅ Debug log
             if (school) schoolName = school.name;
         }
 
@@ -25,6 +27,7 @@ exports.getStudentProfile = async (req, res) => {
         const specialFee = await SpecialFee.findOne({
             studentId: student._id
         });
+        console.log("SpecialFee found:", specialFee); // ✅ Debug log
 
         if (specialFee) {
             amount = specialFee.amount;
@@ -33,6 +36,7 @@ exports.getStudentProfile = async (req, res) => {
             const generalFee = await GeneralFee.findOne({
                 classLevel: student.classLevel
             });
+            console.log("GeneralFee found:", generalFee); // ✅ Debug log
             if (generalFee) amount = generalFee.amount;
         }
 
@@ -46,6 +50,7 @@ exports.getStudentProfile = async (req, res) => {
         });
 
     } catch (error) {
+        console.log("Error in getStudentProfile:", error); // ✅ Debug log
         return res.status(500).json({
             message: "Failed to fetch profile",
             error: error.message,
