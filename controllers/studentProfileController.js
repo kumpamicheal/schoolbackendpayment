@@ -17,8 +17,11 @@ exports.getStudentProfile = async (req, res) => {
         // Determine fee amount
         let amount = 0;
 
-        // Check for special fee assigned to the student
-        const specialFee = await SpecialFee.findOne({ student: student._id });
+        // ✅ FIXED — match by student NAME, because your DB stores "student: 'MUGABI EMMA'"
+        const specialFee = await SpecialFee.findOne({
+            student: student.name.trim()
+        });
+
         console.log("SpecialFee found:", specialFee);
 
         if (specialFee) {
@@ -29,7 +32,9 @@ exports.getStudentProfile = async (req, res) => {
                 schoolId: student.schoolId,
                 class: student.classLevel
             });
+
             console.log("GeneralFee found:", generalFee);
+
             if (generalFee) amount = generalFee.amount;
         }
 
