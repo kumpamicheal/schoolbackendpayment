@@ -1,189 +1,98 @@
-const GeneralFee = require("../models/GeneralFee");
-const OptionalFee = require("../models/OptionalFee");
-const SpecialFee = require("../models/SpecialFee");
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "./profile.css";
 
-// =============================
-// GENERAL FEES
-// =============================
-exports.addGeneralFee = async (req, res) => {
-    try {
-        const fee = await GeneralFee.create({
-            ...req.body,
-            schoolId: req.user.schoolId
-        });
+export default function StudentProfile() {
+    const API = "https://schoolbackendpayment.onrender.com/api";
 
-        res.status(201).json(fee);
-    } catch (error) {
-        console.error("Error adding general fee:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-};
+    const [studentData, setStudentData] = useState({
+        name: "Loading...",
+        classLevel: "",
+        stream: "",
+        parentPhone: "",
+        school: "Loading...",
+    });
 
-exports.getGeneralFees = async (req, res) => {
-    try {
-        const fees = await GeneralFee.find({ schoolId: req.user.schoolId });
-        res.json(fees);
-    } catch (error) {
-        console.error("Error fetching general fees:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-};
+    useEffect(() => {
+        const saved = localStorage.getItem("parentData");
+        if (!saved) return;
 
-exports.updateGeneralFee = async (req, res) => {
-    try {
-        const updated = await GeneralFee.findOneAndUpdate(
-            { _id: req.params.id, schoolId: req.user.schoolId },
-            req.body,
-            { new: true }
-        );
+        const studentInfo = JSON.parse(saved);
+        const studentId = studentInfo.studentId;
 
-        if (!updated)
-            return res.status(404).json({ message: "General fee not found or unauthorized" });
+        if (!studentId) {
+            console.log("❌ No studentId found in localStorage!");
+            return;
+        }
 
-        res.json(updated);
-    } catch (error) {
-        console.error("Error updating general fee:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-};
+        console.log("StudentProfile fetching for studentId:", studentId);
 
-exports.deleteGeneralFee = async (req, res) => {
-    try {
-        const deleted = await GeneralFee.findOneAndDelete({
-            _id: req.params.id,
-            schoolId: req.user.schoolId
-        });
+        const fetchProfile = async () => {
+            try {
+                const res = await axios.get(`${API}/student-profile/${studentId}`);
+                const data = res.data;
 
-        if (!deleted)
-            return res.status(404).json({ message: "Not found or unauthorized" });
+                setStudentData({
+                    name: data.name,
+                    classLevel: data.classLevel,
+                    stream: data.stream,
+                    parentPhone: data.parentPhone,
+                    school: data.school || "Unknown School", // ✅ Updated
+                });
+            } catch (error) {
+                console.log("Error fetching student profile:", error);
+            }
+        };
 
-        res.json({ message: "Deleted" });
-    } catch (error) {
-        console.error("Error deleting general fee:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-};
+        fetchProfile();
+    }, []);
 
-// =============================
-// OPTIONAL FEES
-// =============================
-exports.addOptionalFee = async (req, res) => {
-    try {
-        const fee = await OptionalFee.create({
-            ...req.body,
-            schoolId: req.user.schoolId
-        });
+    const dummy = {
+        amount: 100000, // ✅ Dummy amount
+        balance: 250000,
+    };
 
-        res.status(201).json(fee);
-    } catch (error) {
-        console.error("Error adding optional fee:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-};
+    return (
+        <div className="profile-container">
+            <h2>Student Profile</h2>
 
-exports.getOptionalFees = async (req, res) => {
-    try {
-        const fees = await OptionalFee.find({ schoolId: req.user.schoolId });
-        res.json(fees);
-    } catch (error) {
-        console.error("Error fetching optional fees:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-};
+            <div className="profile-card">
 
-exports.updateOptionalFee = async (req, res) => {
-    try {
-        const updated = await OptionalFee.findOneAndUpdate(
-            { _id: req.params.id, schoolId: req.user.schoolId },
-            req.body,
-            { new: true }
-        );
+                <div className="profile-row">
+                    <span className="label">Name:</span>
+                    <span>{studentData.name}</span>
+                </div>
 
-        if (!updated)
-            return res.status(404).json({ message: "Optional fee not found or unauthorized" });
+                <div className="profile-row">
+                    <span className="label">Class / Stream:</span>
+                    <span>{studentData.classLevel} / {studentData.stream}</span>
+                </div>
 
-        res.json(updated);
-    } catch (error) {
-        console.error("Error updating optional fee:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-};
+                <div className="profile-row">
+                    <span className="label">School:</span>
+                    <span>{studentData.school}</span> {/* ✅ Updated to fetch from backend */}
+                </div>
 
-exports.deleteOptionalFee = async (req, res) => {
-    try {
-        const deleted = await OptionalFee.findOneAndDelete({
-            _id: req.params.id,
-            schoolId: req.user.schoolId
-        });
+                <div className="profile-row">
+                    <span className="label">Parent Phone:</span>
+                    <span>{studentData.parentPhone}</span>
+                </div>
 
-        if (!deleted)
-            return res.status(404).json({ message: "Not found or unauthorized" });
+                <div className="profile-row">
+                    <span className="label">Amount:</span>
+                    <span style={{ color: "blue" }}>
+                        UGX {dummy.amount.toLocaleString()} {/* ✅ Dummy amount */}
+                    </span>
+                </div>
 
-        res.json({ message: "Deleted" });
-    } catch (error) {
-        console.error("Error deleting optional fee:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-};
+                <div className="profile-row">
+                    <span className="label">Balance:</span>
+                    <span style={{ color: "red" }}>
+                        UGX {dummy.balance.toLocaleString()}
+                    </span>
+                </div>
 
-// =============================
-// SPECIAL FEES
-// =============================
-exports.addSpecialFee = async (req, res) => {
-    try {
-        const fee = await SpecialFee.create({
-            ...req.body,
-            schoolId: req.user.schoolId
-        });
-
-        res.status(201).json(fee);
-    } catch (error) {
-        console.error("Error adding special fee:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-};
-
-exports.getSpecialFees = async (req, res) => {
-    try {
-        const fees = await SpecialFee.find({ schoolId: req.user.schoolId });
-        res.json(fees);
-    } catch (error) {
-        console.error("Error fetching special fees:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-};
-
-exports.updateSpecialFee = async (req, res) => {
-    try {
-        const updated = await SpecialFee.findOneAndUpdate(
-            { _id: req.params.id, schoolId: req.user.schoolId },
-            req.body,
-            { new: true }
-        );
-
-        if (!updated)
-            return res.status(404).json({ message: "Special fee not found or unauthorized" });
-
-        res.json(updated);
-    } catch (error) {
-        console.error("Error updating special fee:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-};
-
-exports.deleteSpecialFee = async (req, res) => {
-    try {
-        const deleted = await SpecialFee.findOneAndDelete({
-            _id: req.params.id,
-            schoolId: req.user.schoolId
-        });
-
-        if (!deleted)
-            return res.status(404).json({ message: "Not found or unauthorized" });
-
-        res.json({ message: "Deleted" });
-    } catch (error) {
-        console.error("Error deleting special fee:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-};
+            </div>
+        </div>
+    );
+}
