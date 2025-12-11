@@ -2,6 +2,7 @@ const Student = require("../models/Student");
 const School = require("../models/School");
 const GeneralFee = require("../models/GeneralFee");
 const SpecialFee = require("../models/SpecialFee");
+const Payment = require("../models/Payment");   // ✅ added
 
 exports.getStudentProfile = async (req, res) => {
     try {
@@ -14,10 +15,11 @@ exports.getStudentProfile = async (req, res) => {
             if (school) schoolName = school.name;
         }
 
-        // Determine fee amount
+        // ------------------------------------
+        // Determine REQUIRED FEE (your old code)
+        // ------------------------------------
         let amount = 0;
 
-        // ✅ FIXED — match by student NAME, because your DB stores "student: 'MUGABI EMMA'"
         const specialFee = await SpecialFee.findOne({
             student: student.name.trim()
         });
@@ -27,7 +29,6 @@ exports.getStudentProfile = async (req, res) => {
         if (specialFee) {
             amount = specialFee.amount;
         } else {
-            // Fallback to general fee by school + class
             const generalFee = await GeneralFee.findOne({
                 schoolId: student.schoolId,
                 class: student.classLevel
@@ -38,13 +39,33 @@ exports.getStudentProfile = async (req, res) => {
             if (generalFee) amount = generalFee.amount;
         }
 
+        // ------------------------------------
+        // NEW: Calculate total paid by this student
+        // ------------------------------------
+        const paidData = await Payment.aggregate([
+            { $match: { studentId: student._id.toString(), status: "Success" } },
+            { $group: { _id: null, total: { $sum: "$amount" } } }
+        ]);
+
+        const paid = paidData.length > 0 ? paidData[0].total : 0;
+
+        // ------------------------------------
+        // NEW: Calculate balance
+        // ------------------------------------
+        const balance = amount - paid;
+
+        // ------------------------------------
+        // Response (kept original + added paid & balance)
+        // ------------------------------------
         return res.status(200).json({
             name: student.name,
             classLevel: student.classLevel,
             stream: student.stream,
             parentPhone: student.parentPhone,
             school: schoolName,
-            amount
+            amount,      // required fee (unchanged)
+            paid,        // NEW: total paid
+            balance: balance < 0 ? 0 : balance  // NEW: real balance
         });
 
     } catch (error) {
