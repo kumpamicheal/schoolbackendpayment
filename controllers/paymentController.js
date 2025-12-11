@@ -2,7 +2,6 @@ const Payments = require("../models/Payment");
 
 // ---------------------------------------------
 // PHONE NORMALIZER
-// Ensures MTN Uganda format is always 2567XXXXXXX
 // ---------------------------------------------
 function normalizePhone(phone) {
     let cleaned = phone.trim();
@@ -12,7 +11,7 @@ function normalizePhone(phone) {
     } else if (cleaned.startsWith("0")) {
         cleaned = "256" + cleaned.substring(1);
     } else if (cleaned.startsWith("256")) {
-        // already correct
+        // OK
     } else {
         cleaned = "256" + cleaned;
     }
@@ -31,17 +30,17 @@ const requestToPay = async (req, res) => {
         const normalizedPhone = normalizePhone(phone);
         console.log("Normalized phone:", normalizedPhone);
 
-        // MOCK MODE
         console.log("⚠️ MOCK MODE ENABLED — No MTN Request Sent");
 
-        // SAVE PAYMENT (Fix missing fields + status enum)
+        // SAVE PAYMENT (ONLY FIX REQUIRED FIELDS)
         await Payments.create({
-            studentId,        // <-- REQUIRED (ADDED)
-            schoolId,         // <-- REQUIRED (ADDED)
+            studentId,
+            schoolId,
             phone: normalizedPhone,
             amount,
             externalId,
-            status: "Pending", // <-- FIXED ENUM ("Pending" not "PENDING")
+            method: "mtn",       // ✅ FIXED (REQUIRED)
+            status: "pending",   // ✅ FIXED ENUM (lowercase)
             providerMessage: "MTN mock successful"
         });
 
@@ -50,6 +49,7 @@ const requestToPay = async (req, res) => {
             externalId,
             phone: normalizedPhone
         });
+
     } catch (error) {
         console.log("Payment Error:", error.message);
         res.status(500).json({ message: "Payment failed", error: error.message });
