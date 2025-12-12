@@ -18,9 +18,9 @@ const getPaymentHistory = async (req, res) => {
         for (let pay of payments) {
             let term = "Unknown";
 
-            // Step 1: Try special fee first
+            // Step 1: Try special fee first (match name safely)
             const special = await SpecialFee.findOne({
-                student: pay.studentName, // adjust depending on your stored field
+                student: new RegExp(`^${pay.studentName.trim()}$`, "i"), // case-insensitive match
                 class: pay.classLevel
             });
 
@@ -32,7 +32,6 @@ const getPaymentHistory = async (req, res) => {
                     schoolId: pay.schoolId,
                     class: pay.classLevel
                 });
-
                 if (general) term = general.term;
             }
 
