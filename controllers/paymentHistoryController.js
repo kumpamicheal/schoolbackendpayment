@@ -18,9 +18,12 @@ const getPaymentHistory = async (req, res) => {
         for (let pay of payments) {
             let term = "Unknown";
 
+            // Debug log for safe checking
+            console.log("Processing payment:", pay._id, pay.studentName, pay.classLevel, pay.schoolId);
+
             // Step 1: Try special fee first (match name safely)
             const special = await SpecialFee.findOne({
-                student: new RegExp(`^${pay.studentName.trim()}$`, "i"), // case-insensitive match
+                student: new RegExp(`^${(pay.studentName || "").trim()}$`, "i"), // safe guard added
                 class: pay.classLevel
             });
 
